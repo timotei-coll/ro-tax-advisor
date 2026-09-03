@@ -1,11 +1,8 @@
 from docling.chunking import HybridChunker
-import re
 
 
 def create_chunks(document):
-
     chunker = HybridChunker()
-
     return list(chunker.chunk(document))
 
 
@@ -13,55 +10,62 @@ def extract_metadata(document):
 
     metadata = {}
 
-    current = {
-        "title": None,
-        "chapter": None,
-        "article": None
-    }
+    current_title = None
+    current_chapter = None
+    current_article = None
 
     for item in document.texts:
 
         text = item.text.strip()
+        upper_text = text.upper()
 
-        if text.upper().startswith("TITLUL"):
-            current["title"] = text
+        if upper_text.startswith("TITLUL"):
+            current_title = text
 
-        elif text.upper().startswith("CAPITOLUL"):
-            current["chapter"] = text
+        elif upper_text.startswith("CAPITOLUL"):
+            current_chapter = text
 
-        elif text.upper().startswith("ART."):
-            current["article"] = text
+        elif upper_text.startswith("ART."):
+            current_article = text
 
-        metadata[item.self_ref] = current.copy()
+        metadata[item.self_ref] = {
+            "title": current_title,
+            "chapter": current_chapter,
+            "article": current_article
+        }
 
     return metadata
 
 
 def attach_metadata(chunks, metadata):
-
     result = []
 
     for chunk in chunks:
-
         chunk_metadata = {
-            "title": None,
-            "chapter": None,
-            "article": None
+            "title": "",
+            "chapter": "",
+            "article": ""
         }
 
+        # Căutăm cel mai specific metadata disponibil
         for item in chunk.meta.doc_items:
+            item_metadata = metadata.get(item.self_ref)
 
-            if item.self_ref in metadata:
+            if not item_metadata:
+                continue
 
-                chunk_metadata = metadata[item.self_ref]
-
+            if item_metadata["article"]:
+                chunk_metadata = item_metadata
                 break
 
-        result.append(
-            {
-                "text": chunk.text,
-                "metadata": chunk_metadata
-            }
-        )
+            if item_metadata["chapter"]:
+                chunk_metadata = item_metadata
+
+        result.append({
+            "text": chunk.text,
+            "metadata": chunk_metadata
+        })
 
     return result
+
+    

@@ -23,6 +23,7 @@ def main():
         metadata
     )
 
+
     print("Chunk-uri:", len(chunks))
 
     # 4. Creează embeddings
