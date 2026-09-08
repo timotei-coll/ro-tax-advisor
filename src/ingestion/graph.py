@@ -1,3 +1,10 @@
+from phoenix.otel import register
+from openinference.instrumentation.langchain import LangChainInstrumentor
+
+tracer_provider = register()
+LangChainInstrumentor().instrument(
+    tracer_provider=tracer_provider
+)
 from typing import TypedDict
 
 from langgraph.graph import StateGraph, START, END
