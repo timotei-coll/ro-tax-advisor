@@ -1,0 +1,25 @@
+text = '''
+Proiectul **RO Tax Advisor** este un sistem RAG (Retrieval-Augmented Generation) care răspunde la întrebări despre Codul fiscal din România.
+
+Mai întâi, documentul HTML este procesat cu **Docling**, iar `HybridChunker` îl împarte în chunk-uri mai mici, potrivite pentru procesarea de către modele AI.
+
+Pentru fiecare chunk se generează un **embedding**, adică o reprezentare numerică a sensului textului, folosind **Sentence Transformers** și modelul `paraphrase-multilingual-MiniLM-L12-v2`.
+
+Embedding-urile, împreună cu textele și metadata, sunt stocate în **ChromaDB**, o bază de date vectorială.
+
+Când utilizatorul pune o întrebare, și întrebarea este transformată în embedding, iar ChromaDB caută textele semantic cele mai apropiate.
+
+Sistemul combină această căutare semantică cu potrivirea unor cuvinte și expresii importante și selectează cele mai relevante 5 chunk-uri.
+
+Acestea sunt introduse într-un prompt și trimise către modelul **GPT-OSS-120B**, accesat prin **Groq** și integrat prin LangChain.
+
+**LangGraph** organizează pașii workflow-ului: retrieval, construirea promptului și generarea răspunsului.
+
+Interfața este realizată cu **Streamlit**, unde utilizatorul introduce întrebarea și vede răspunsul și sursele.
+
+Pentru istoricul conversațiilor folosesc **SQLite**, prin biblioteca `sqlite3`, unde sunt salvate întrebările, răspunsurile și data.
+
+Pentru verificarea sistemului folosesc **Phoenix**, care urmărește execuția și permite evaluarea relevanței chunk-urilor și a fidelității răspunsurilor.
+
+De asemenea, am introdus **Ragas** pentru evaluarea automată a sistemului RAG, verificând aspecte precum relevanța contextului și dacă răspunsul este susținut de informațiile recuperate.
+'''
