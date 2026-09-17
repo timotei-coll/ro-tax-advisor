@@ -1,4 +1,4 @@
-import os
+
 from pathlib import Path
 
 import chromadb
@@ -47,8 +47,9 @@ def load_chunks():
 def create_generator():
 
     llm = ChatGroq(
-        model="openai/gpt-oss-120b",
-        temperature=0
+        model="openai/gpt-oss-20b",
+        temperature=0,
+         max_tokens=2048
     )
 
     generator_llm = LangchainLLMWrapper(llm)
@@ -83,6 +84,14 @@ def generate_dataset():
         f"Chunk-uri disponibile: {len(chunks)}"
     )
 
+    # Folosim doar câteva chunk-uri pentru test,
+    # ca să reducem consumul de tokeni.
+    chunks = chunks[:5]
+
+    print(
+        f"Folosesc {len(chunks)} chunk-uri pentru Ragas."
+    )
+
     print("Construiesc generatorul Ragas...")
 
     generator = create_generator()
@@ -103,8 +112,11 @@ def generate_dataset():
         exist_ok=True
     )
 
-    testset.to_csv(
-        output_path
+    # Salvare UTF-8 pentru caracterele românești
+    testset.to_pandas().to_csv(
+        output_path,
+        index=False,
+        encoding="utf-8-sig"
     )
 
     print()
@@ -121,3 +133,4 @@ def generate_dataset():
 
 if __name__ == "__main__":
     generate_dataset()
+

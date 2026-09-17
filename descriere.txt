@@ -22,4 +22,9 @@ Pentru istoricul conversațiilor folosesc **SQLite**, prin biblioteca `sqlite3`,
 Pentru verificarea sistemului folosesc **Phoenix**, care urmărește execuția și permite evaluarea relevanței chunk-urilor și a fidelității răspunsurilor.
 
 De asemenea, am introdus **Ragas** pentru evaluarea automată a sistemului RAG, verificând aspecte precum relevanța contextului și dacă răspunsul este susținut de informațiile recuperate.
+
+Pentru evaluarea sistemului RAG, am utilizat un set de 23 de întrebări generate automat cu Ragas. Pentru fiecare întrebare, sistemul RAG a generat un răspuns și a recuperat informații din baza
+ de date, acestea fiind apoi evaluate cu trei metrici: Faithfulness, care măsoară cât de bine este susținut răspunsul de informațiile recuperate; Context Precision, care evaluează relevanța informațiilor
+  recuperate pentru întrebare; și Context Recall, care măsoară cât de complet a fost recuperat contextul necesar pentru formularea răspunsului. Scorurile sunt cuprinse între 0 și 1, valorile mai 
+  apropiate de 1 indicând o performanță mai bună.
 '''
